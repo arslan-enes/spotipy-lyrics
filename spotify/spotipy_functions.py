@@ -13,7 +13,18 @@ pd.set_option('display.width', None)
 load_dotenv()
 spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=os.getenv("CLIENT_ID"),
                                                                               client_secret=os.getenv("CLIENT_SECRET"),
-                                                                              ))
+                                                                              ),
+                          requests_timeout=None)
+
+
+def search_artist_song(artist, song):
+    results = spotify.search(q=f'artist:{artist} track:{song}', type='track')
+    items = results['tracks']['items']
+    if len(items) > 0:
+        print(spotify.audio_features(items[0]['id']))
+        return spotify.audio_features(items[0]['id'])
+    else:
+        return None
 
 
 def get_artist_id(artist_name):
